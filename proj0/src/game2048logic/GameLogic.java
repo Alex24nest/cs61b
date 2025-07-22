@@ -51,7 +51,7 @@ public class GameLogic {
     public static void tiltColumn(int[][] board, int c) {
         // TODO: fill this in in task 5
         int minR = 0;
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i < board.length; i++) {
             if (board[i][c] != 0) {
                 minR = moveTileUpAsFarAsPossible(board, i, c, minR);
             }
@@ -66,7 +66,7 @@ public class GameLogic {
      */
     public static void tiltUp(int[][] board) {
         // TODO: fill this in in task 6
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 0; i < board.length; i++) {
             tiltColumn(board, i);
         }
         return;
@@ -82,10 +82,21 @@ public class GameLogic {
     public static void tilt(int[][] board, Side side) {
         // TODO: fill this in in task 7
         if (side == Side.EAST) {
+            MatrixUtils.rotateLeft(board);
+            tiltUp(board);
+            MatrixUtils.rotateRight(board);
             return;
         } else if (side == Side.WEST) {
+            MatrixUtils.rotateRight(board);
+            tiltUp(board);
+            MatrixUtils.rotateLeft(board);
             return;
         } else if (side == Side.SOUTH) {
+            MatrixUtils.rotateRight(board);
+            MatrixUtils.rotateRight(board);
+            tiltUp(board);
+            MatrixUtils.rotateLeft(board);
+            MatrixUtils.rotateLeft(board);
             return;
         } else {
             tiltUp(board);
