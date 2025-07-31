@@ -2,77 +2,80 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.Test;
 import java.util.*;
 
-public class LinkedListDequeIntegrationTest {
+public class LinkedListDeque61BIntegrationTest {
 
     @Test
     public void randomizedIntegrationTest() {
-        Deque61B<Integer> testDeque = new LinkedListDeque61B<>();
-        LinkedList<Integer> refDeque = new LinkedList<>();
+        Deque61B<Integer> test = new LinkedListDeque61B<>();
+        LinkedList<Integer> ref = new LinkedList<>();
         StringBuilder trace = new StringBuilder();
+        Random rnd = new Random(123456);  // fixed seed for reproducibility
+        int ops = 10000;
 
-        Random random = new Random();
-        int numOps = 10000;
-
-        for (int i = 0; i < numOps; i++) {
-            int op = random.nextInt(8);
-
+        for (int i = 0; i < ops; i++) {
+            int op = rnd.nextInt(8);
             switch (op) {
                 case 0 -> {
-                    int val = random.nextInt(1000);
-                    testDeque.addFirst(val);
-                    refDeque.addFirst(val);
-                    trace.append("addFirst(").append(val).append(")\n");
+                    int v = rnd.nextInt(1000);
+                    test.addFirst(v);
+                    ref.addFirst(v);
+                    trace.append("addFirst(").append(v).append(")\n");
                 }
                 case 1 -> {
-                    int val = random.nextInt(1000);
-                    testDeque.addLast(val);
-                    refDeque.addLast(val);
-                    trace.append("addLast(").append(val).append(")\n");
+                    int v = rnd.nextInt(1000);
+                    test.addLast(v);
+                    ref.addLast(v);
+                    trace.append("addLast(").append(v).append(")\n");
                 }
                 case 2 -> {
-                    if (!refDeque.isEmpty()) {
-                        Integer expected = refDeque.removeFirst();
-                        Integer actual = testDeque.removeFirst();
+                    if (!ref.isEmpty()) {
+                        Integer e = ref.removeFirst();
+                        Integer a = test.removeFirst();
                         trace.append("removeFirst()\n");
-                        assertThat(actual).named(trace.toString()).isEqualTo(expected);
+                        System.out.println(trace);
+                        assertThat(a).isEqualTo(e);
                     }
                 }
                 case 3 -> {
-                    if (!refDeque.isEmpty()) {
-                        Integer expected = refDeque.removeLast();
-                        Integer actual = testDeque.removeLast();
+                    if (!ref.isEmpty()) {
+                        Integer e = ref.removeLast();
+                        Integer a = test.removeLast();
                         trace.append("removeLast()\n");
-                        assertThat(actual).named(trace.toString()).isEqualTo(expected);
+                        System.out.println(trace);
+                        assertThat(a).isEqualTo(e);
                     }
                 }
                 case 4 -> {
-                    int size = refDeque.size();
+                    int size = ref.size();
                     if (size > 0) {
-                        int index = random.nextInt(size);
-                        Integer expected = refDeque.get(index);
-                        Integer actual = testDeque.get(index);
-                        trace.append("get(").append(index).append(")\n");
-                        assertThat(actual).named(trace.toString()).isEqualTo(expected);
+                        int idx = rnd.nextInt(size);
+                        Integer e = ref.get(idx);
+                        Integer a = test.get(idx);
+                        trace.append("get(").append(idx).append(")\n");
+                        System.out.println(trace);
+                        assertThat(a).isEqualTo(e);
                     }
                 }
                 case 5 -> {
-                    boolean expected = refDeque.isEmpty();
-                    boolean actual = testDeque.isEmpty();
+                    boolean e = ref.isEmpty();
+                    boolean a = test.isEmpty();
                     trace.append("isEmpty()\n");
-                    assertThat(actual).named(trace.toString()).isEqualTo(expected);
+                    System.out.println(trace);
+                    assertThat(a).isEqualTo(e);
                 }
                 case 6 -> {
-                    int expected = refDeque.size();
-                    int actual = testDeque.size();
+                    int e = ref.size();
+                    int a = test.size();
                     trace.append("size()\n");
-                    assertThat(actual).named(trace.toString()).isEqualTo(expected);
+                    System.out.println(trace);
+                    assertThat(a).isEqualTo(e);
                 }
                 case 7 -> {
-                    List<Integer> expected = new ArrayList<>(refDeque);
-                    List<Integer> actual = testDeque.toList();
+                    List<Integer> e = new ArrayList<>(ref);
+                    List<Integer> a = test.toList();
                     trace.append("toList()\n");
-                    assertThat(actual).named(trace.toString())
-                            .containsExactlyElementsIn(expected).inOrder();
+                    System.out.println(trace);
+                    assertThat(a).containsExactlyElementsIn(e).inOrder();
                 }
             }
         }
