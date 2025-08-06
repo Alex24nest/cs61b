@@ -127,9 +127,69 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         return getRecursive(index - 1);
     }
 
+    private class linkedListDeque61BIterator implements Iterator<T> {
+        private int wizPos;
+
+        linkedListDeque61BIterator() {
+            wizPos = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (wizPos < size) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public T next() {
+            T itemToReturn =  sentinel.next.item;
+            sentinel.next = sentinel.next.next;
+
+            wizPos += 1;
+
+            return itemToReturn;
+        }
+    }
+
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new linkedListDeque61BIterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (o instanceof Deque61B<?> other) {
+            if (this.size != other.size()) {
+                return false;
+            }
+
+            Iterator<T> thisIterator = this.iterator();
+            Iterator<?> otherIterator = other.iterator();
+
+
+
+            while (thisIterator.hasNext()) {
+                T a = thisIterator.next();
+                Object b = otherIterator.next();
+
+                if (a == null) {
+                    if (b != null) { return false; }
+                } else if (!a.equals(b)) { return false; }
+            }
+
+            return true;
+
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.toList().toString();
     }
 
 }

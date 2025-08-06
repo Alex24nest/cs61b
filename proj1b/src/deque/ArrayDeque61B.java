@@ -9,16 +9,19 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     private int size;
     private int nextFirst;
     private int nextLast;
+    private int length;
 
     public ArrayDeque61B() {
         items = (T[]) new Object[8];
         size = 0;
         nextFirst = Math.floorMod(-1, items.length);
         nextLast = 0;
+        length = 8;
     }
 
     private void resizeUp(int capacity) {
         T[] a = (T[]) new Object[capacity];
+        length = capacity;
         for (int i = 0; i < nextLast; i++) {
             a[i] = items[i];
         }
@@ -44,6 +47,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         if ((nextFirst - nextLast) < 0) {
             resizeUp(size * 2);
         }
+
         items[nextLast] = x;
         size++;
         nextLast++;
@@ -64,11 +68,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public boolean isEmpty() {
-        // option: nextLast == 0 && nextFirst == Math.floorMod(-1, items.length
-        if (size == 0) {
-            return true;
-        }
-        return false;
+        return size == 0;
     }
 
     @Override
@@ -78,6 +78,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     private void resizeDown(int capacity) {
         T[] a = (T[]) new Object[capacity];
+        length = capacity;
         for (int i = 0; i < nextLast; i++) {
             a[i] = items[i];
         }
@@ -90,10 +91,30 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public T removeFirst() {
-        T returnItem = items[nextFirst + 1];
-        items[nextFirst + 1] = null;
+        if (size == 0) { return null; }
+        T returnItem;
+
+        if (nextFirst == length - 1) {
+
+            returnItem = items[0];
+            items[0] = null;
+
+            int i = 1;
+            while (i < size) {
+                if (items[i] != null) {
+                    items[i - 1] = items[i];
+                }
+                i++;
+            }
+            items[i-1] = null;
+
+            nextLast--;
+        } else {
+            returnItem = items[nextFirst + 1];
+            items[nextFirst + 1] = null;
+            nextFirst++;
+        }
         size--;
-        nextFirst++;
 
         if (size < (items.length * 0.25) && items.length > 15) {
             resizeDown(items.length / 2);
@@ -104,10 +125,33 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public T removeLast() {
-        T returnItem = items[nextLast - 1];
-        items[nextLast - 1] = null;
+        if (size == 0) { return null; }
+
+        T returnItem;
+
+        if (nextLast == 0) {
+            returnItem = items[length - 1];
+            items[length - 1] = null;
+
+            int i = length - 2;
+            while (i >= 0) {
+                if (items[i] != null) {
+                    items[i + 1] = items[i];
+                }
+                i--;
+            }
+            items[i + 1] = null;
+
+            nextFirst++;
+
+        } else {
+            returnItem = items[nextLast - 1];
+            items[nextLast - 1] = null;
+
+            nextLast--;
+        }
         size--;
-        nextLast--;
+
 
         if (size < (items.length * 0.25) && items.length > 15) {
             resizeDown(items.length / 2);
@@ -121,14 +165,12 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         if (size < index) return null;
 
         if (index < 0) {
-            index += size + 1;
+            index += size;
         }
 
-        if (index < (items.length - nextFirst)) {
-            return items[nextFirst + index];
-        }
+        int i = (index + nextFirst + 1) % items.length;
 
-        return items[index - nextFirst];
+        return items[i];
     }
 
     @Override
@@ -166,6 +208,39 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     public Iterator<T> iterator() {
         return new ArrayDeque61BIterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (o instanceof Deque61B<?> other) {
+            if (this.size != other.size()) {
+                return false;
+            }
+
+            Iterator<T> thisIterator = this.iterator();
+            Iterator<?> otherIterator = other.iterator();
+
+
+
+            while (thisIterator.hasNext()) {
+                T a = thisIterator.next();
+                Object b = otherIterator.next();
+
+                if (a == null) {
+                    if (b != null) { return false; }
+                } else if (!a.equals(b)) { return false; }
+            }
+
+            return true;
+
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.toList().toString();
     }
 
 }

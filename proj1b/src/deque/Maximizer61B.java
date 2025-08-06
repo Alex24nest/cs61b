@@ -6,33 +6,56 @@ public class Maximizer61B {
      * Returns the maximum element from the given iterable of comparables.
      * You may assume that the iterable contains no nulls.
      *
-     * @param iterable  the Iterable of T
-     * @return          the maximum element
+     * @param iterable the Iterable of T
+     * @return the maximum element
      */
     public static <T extends Comparable<T>> T max(Iterable<T> iterable) {
-        return null;
+
+        T maxValue = null;
+
+        for (T i : iterable) {
+            if (i == null) {
+                return null;
+            }
+            if (maxValue == null) {
+                maxValue = i;
+            }
+            int cmp = i.compareTo(maxValue);
+            if (cmp > 0) {
+                maxValue = i;
+            }
+        }
+
+        return maxValue;
     }
 
     /**
      * Returns the maximum element from the given iterable according to the specified comparator.
      * You may assume that the iterable contains no nulls.
      *
-     * @param iterable  the Iterable of T
-     * @param comp      the Comparator to compare elements
-     * @return          the maximum element according to the comparator
+     * @param iterable the Iterable of T
+     * @param comp     the Comparator to compare elements
+     * @return the maximum element according to the comparator
      */
     public static <T> T max(Iterable<T> iterable, Comparator<T> comp) {
-        return null;
-    }
+        T maxValue = null;
 
-    public static void main(String[] args) {
-        // The style checker will complain about this main method, feel free to delete.
+        for (T i : iterable) {
+            if (i == null) {
+                return null;
+            }
+            if (maxValue == null) {
+                maxValue = i;
+            }
 
-        // ArrayDeque61B<Integer> ad = new ArrayDeque61B<>();
-        // ad.addLast(5);
-        // ad.addLast(12);
-        // ad.addLast(17);
-        // ad.addLast(23);
-        // System.out.println(max(ad));
+            int cmp = comp.compare(i, maxValue);
+
+            if (cmp > 0) {
+                maxValue = i;
+            }
+
+        }
+
+        return maxValue;
     }
 }
